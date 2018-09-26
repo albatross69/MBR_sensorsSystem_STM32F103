@@ -72,6 +72,17 @@ static void
 UFD_Init_IO_Ports(
 	void)
 {
+	LL_GPIO_InitTypeDef GPIO_init_s;
+	GPIO_init_s.Mode 		= LL_GPIO_MODE_ALTERNATE;
+	GPIO_init_s.OutputType 	= LL_GPIO_OUTPUT_PUSHPULL;
+	GPIO_init_s.Pin 		= LL_GPIO_PIN_2 | LL_GPIO_PIN_3;
+	GPIO_init_s.Pull 		= LL_GPIO_PULL_UP;
+	GPIO_init_s.Speed 		= LL_GPIO_MODE_OUTPUT_50MHz;
+
+	LL_GPIO_Init(
+		GPIOA,
+		&GPIO_init_s);
+
 	/* TODO - UFD написать инициализацию портов ввода/вывода */
 }
 
