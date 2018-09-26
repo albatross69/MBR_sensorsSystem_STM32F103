@@ -44,7 +44,9 @@ int main(
 	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
 	while(1)
 	{
+		BLEDS_Green_ON();
 
+		BLEDS_Green_OFF();
 	}
 	return 1;
 }
