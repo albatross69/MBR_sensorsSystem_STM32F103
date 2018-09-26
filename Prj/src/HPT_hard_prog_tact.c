@@ -1,18 +1,19 @@
 /** 
- * @file   	main.c
+ * @file   	HPT_hard_prog_tact.c
  * @author 	m.isaev
  * @version	
- * @date 	24 сент. 2018 г.
+ * @date 	26 сент. 2018 г.
  * @brief
  */
 
 
 /*#### |Begin| --> Секция - "Include" ########################################*/
-#include "main.h"
+#include "HPT_hard_prog_tact.h"
 /*#### |End  | <-- Секция - "Include" ########################################*/
 
 
 /*#### |Begin| --> Секция - "Глобальные переменные" ##########################*/
+hpt_hard_programm_tact_status_s HPT_status_s;
 /*#### |End  | <-- Секция - "Глобальные переменные" ##########################*/
 
 
@@ -25,37 +26,36 @@
 
 
 /*#### |Begin| --> Секция - "Описание глобальных функций" ####################*/
-int main(
-	void)
+void
+HPT_InitTIMForProgTact(uint32_t ovefrlowVal)
 {
-	/*=== |Begin| --> Секция - "Конфигурирование периферии микроконтроллера" =*/
+	LL_TIM_InitTypeDef timInit_s;
+	LL_TIM_StructInit(&timInit_s);
 
-	/* Конфигурирование тактового генератора */
-	LL_RCC_Init_HSE_8MHz_HCLK_72MHz();
+	timInit_s.Autoreload = ovefrlowVal;
+	timInit_s.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+	timInit_s.CounterMode = LL_TIM_COUNTERMODE_UP;
+	timInit_s.Prescaler = 72u;
 
-	/* Конфигурирование портов ввода/вывода для управления светодиодами,
-	 * установленными на плате */
-	BLEDS_Init_AllLeds();
+	LL_TIM_Init(
+		TIM4,
+		&timInit_s);
 
-	/* Конфигурирование модуля USART 2 для передачи отладочной информации */
-	UFD_Init_All_USART2_TxRx_DMA1_Channel7_IO_Ports(
-		9600u);
+	LL_TIM_EnableIT_UPDATE(TIM4);
 
-	HPT_InitTIMForProgTact(
-		10000u);
+	NVIC_SetPriority(
+		TIM4_IRQn,
+		1);
+	NVIC_EnableIRQ(
+		TIM4_IRQn);
 
-	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
-	while(1)
-	{
-		if (HPT_status_s.newProgTactEn_flag != 0)
-		{
-			HPT_status_s.newProgTactEn_flag = 0;
-		BLEDS_Green_ON();
+}
 
-		BLEDS_Green_OFF();
-		}
-	}
-	return 1;
+void TIM4_IRQHandler(void)
+{
+	LL_TIM_ClearFlag_UPDATE(TIM4);
+
+	HPT_status_s.newProgTactEn_flag ++;
 }
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
