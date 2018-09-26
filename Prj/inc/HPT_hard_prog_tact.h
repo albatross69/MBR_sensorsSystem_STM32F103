@@ -20,6 +20,8 @@
 #include "stm32f1xx.h"
 #include "stm32f1xx_ll_tim.h"
 #include "stm32f1xx_ll_rcc.h"
+#include "stm32f1xx_hal_tim.h"
+#include "stm32f1xx_hal_rcc.h"
 /*==== |End  | <-- Секция - "MK peripheral libraries" ========================*/
 
 /*==== |Begin| --> Секция - "Extern libraries" ===============================*/
@@ -46,6 +48,9 @@ typedef struct
 
 	/* Остаток времени после выполнения всего цикла (в тиках аппаратного счетчика) */
 	size_t restProgTactCnt;
+
+	/* Минимальный остаток времени после выполнения всего цикла (в тиках аппаратного счетчика) */
+	size_t minRestTactCnt;
 } hpt_hard_programm_tact_status_s;
 /*#### |End  | <-- Секция - "Определение типов" ##############################*/
 
@@ -59,6 +64,9 @@ extern hpt_hard_programm_tact_status_s HPT_status_s;
 extern void
 HPT_InitTIMForProgTact(
 	uint32_t ovefrlowVal);
+
+extern size_t HPT_Min(
+		size_t oldMinVal, size_t curMinVal);
 /*#### |End  | <-- Секция - "Прототипы глобальных функций" ###################*/
 
 
