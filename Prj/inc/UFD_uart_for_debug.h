@@ -21,6 +21,8 @@
 #include "stm32f1xx.h"
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_ll_usart.h"
+#include "stm32f1xx_ll_dma.h"
+
 /*==== |End  | <-- Секция - "MK peripheral libraries" ========================*/
 
 /*==== |Begin| --> Секция - "Extern libraries" ===============================*/
