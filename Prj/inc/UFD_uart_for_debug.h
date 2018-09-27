@@ -22,7 +22,7 @@
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_ll_usart.h"
 #include "stm32f1xx_ll_dma.h"
-
+#include "stm32f1xx_ll_gpio.h"
 /*==== |End  | <-- Секция - "MK peripheral libraries" ========================*/
 
 /*==== |Begin| --> Секция - "Extern libraries" ===============================*/

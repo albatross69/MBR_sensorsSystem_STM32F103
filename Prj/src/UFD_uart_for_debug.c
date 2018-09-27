@@ -106,7 +106,7 @@ UFD_Init_DMA1_Channel7_For_USART2_Tx(
 
 	LL_DMA_Init(
 		DMA1,
-		Channel7,
+		LL_DMA_CHANNEL_7,
 		&DMA_init_s);
 }
 

@@ -61,13 +61,13 @@ void TIM4_IRQHandler(void)
 
 size_t HPT_Min(size_t oldMinVal, size_t curMinVal)
 {
-	if(val1 < val2)
+	if(oldMinVal < curMinVal)
 	{
-		return val1;
+		return oldMinVal;
 	}
 	else
 	{
-		return val2;
+		return curMinVal;
 	}
 }
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
