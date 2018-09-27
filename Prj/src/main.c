@@ -47,13 +47,14 @@ int main(
 	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
 	while(1)
 	{
-		if (HPT_status_s.newProgTactEn_flag != 0)
-		{
+//		if (HPT_status_s.newProgTactEn_flag != 0)
+//		{
 			HPT_status_s.newProgTactEn_flag = 0;
 		BLEDS_Green_ON();
+		LL_USART_TransmitData8(USART2, 0xAA);
 
 		BLEDS_Green_OFF();
-		}
+//		}
 	}
 	return 1;
 }
