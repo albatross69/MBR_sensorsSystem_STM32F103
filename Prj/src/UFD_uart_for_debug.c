@@ -57,22 +57,34 @@ UFD_StartForceDMATransmit(
 	uint32_t *pMemSource,
 	uint16_t cnt)
 {
-	/* TODO - UFD написать форсированный запуск передачи по каналу DMA */
+	/* Отключение модуля UART2 */
+	LL_USART_Disable(USART2);
 
-	// Включить в UART запрос на передачу DMA
+	/* Отключение канала DMA */
+	LL_DMA_DisableChannel(
+		DMA1,
+		LL_DMA_CHANNEL_7);
+
+	/* Установить адрес, откуда начнется передача */
+	LL_DMA_SetMemoryAddress(
+		DMA1,
+		LL_DMA_CHANNEL_7,
+		(uint32_t) pMemSource);
+
+	/* Восстановить кол-во байт, которое необходимо передать по каналу DMA */
+	LL_DMA_SetDataLength(
+		DMA1,
+		LL_DMA_CHANNEL_7,
+		cnt);
+
+	/* Включить в UART запрос на передачу DMA */
 	LL_USART_EnableDMAReq_TX(USART2);
 
-	// Установить адрес, откуда начнется передача
-	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_7, (uint32_t) pMemSource);
+	/* Включить канал DMA */
+	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
 
-	// Восстановить кол-во байт, которое необходимо передать по каналу DMA
-	 LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, cnt);
-
-	// Включить канал DMA
-	 LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
-
-	// Включить UART
-	 LL_USART_Enable(USART2);
+	/* Включить UART */
+	LL_USART_Enable(USART2);
 
 }
 
@@ -84,11 +96,11 @@ UFD_StartDMATransmit(
 	/* TODO - UFD написать запуск передачи по каналу DMA если канал DMA неактивен */
 
 
-	if(LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_7) != 1)
+	if (LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_7) != 1)
 	{
-	UFD_StartForceDMATransmit(
-		*pMemSource,
-		cnt);
+		UFD_StartForceDMATransmit(
+			pMemSource,
+			cnt);
 	}
 }
 
@@ -118,11 +130,11 @@ UFD_Init_DMA1_Channel7_For_USART2_Tx(
 
 	LL_DMA_InitTypeDef DMA_init_s;
 	DMA_init_s.Direction 				= LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
-	DMA_init_s.MemoryOrM2MDstAddress 	= 0;
+	DMA_init_s.MemoryOrM2MDstAddress 	= 0u;
 	DMA_init_s.MemoryOrM2MDstDataSize 	= LL_DMA_MDATAALIGN_BYTE;
 	DMA_init_s.MemoryOrM2MDstIncMode 	= LL_DMA_MEMORY_INCREMENT;
 	DMA_init_s.Mode 					= LL_DMA_MODE_NORMAL;
-	DMA_init_s.NbData 					= 0;
+	DMA_init_s.NbData 					= 0u;
 	DMA_init_s.PeriphOrM2MSrcAddress 	= (uint32_t) &USART2->DR;
 	DMA_init_s.PeriphOrM2MSrcDataSize 	= LL_DMA_PDATAALIGN_BYTE;
 	DMA_init_s.PeriphOrM2MSrcIncMode 	= LL_DMA_PERIPH_NOINCREMENT;
@@ -133,26 +145,21 @@ UFD_Init_DMA1_Channel7_For_USART2_Tx(
 		LL_DMA_CHANNEL_7,
 		&DMA_init_s);
 
-	// ВКЛЮЧЕНИЕ ПРЕРЫВАНИЯ ПО ОКОНЧАНИИ ПЕРЕДАЧИ
+	/* Конфигурирование источников прерываний */
 	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
-
 	LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_7);
 
-	// ПРИОРИТЕТ ПРЕРЫВАНИЯ ДЛЯ DMA
-	NVIC_SetPriority(DMA1_Channel7_IRQn, 5);
-
-	// ВЫКЛЮЧЕНИЕ ВЕКТОРА ПРЕРЫВАНИЙ
-	NVIC_EnableIRQ(DMA1_Channel7_IRQn);
+	/* Конфигурирование вектора прерываний */
+	NVIC_SetPriority	(DMA1_Channel7_IRQn, 5);
+	NVIC_EnableIRQ		(DMA1_Channel7_IRQn);
 }
 
 static void
 UFD_Init_USART2_TxRx(
 	uint32_t baudrate)
 {
-	/* TODO - UFD написать инициализацию модуля USART2_TxRx */
-
 	LL_USART_InitTypeDef USART_init_s;
-	USART_init_s.BaudRate 				= baudrate;
+	USART_init_s.BaudRate 				= (uint32_t) baudrate;
 	USART_init_s.DataWidth 				= LL_USART_DATAWIDTH_8B;
 	USART_init_s.HardwareFlowControl 	= LL_USART_HWCONTROL_NONE;
 	USART_init_s.Parity 				= LL_USART_PARITY_NONE;
@@ -165,6 +172,10 @@ UFD_Init_USART2_TxRx(
 
 	LL_USART_Enable(USART2);
 
+	/* Конфигурирование источников прерываний */
+	LL_USART_EnableIT_RXNE(USART2);
+
+	/* Конфигурирование вектора прерываний */
 	NVIC_SetPriority(USART2_IRQn, 5);
 	NVIC_EnableIRQ(USART2_IRQn);
 }
@@ -172,37 +183,55 @@ UFD_Init_USART2_TxRx(
 void USART2_IRQHandler(
 	void)
 {
-	/* TODO - UFD написать обработчик прерывания модуля USART2 */
-	LL_USART_ClearFlag_PE(USART2);
-	LL_USART_ClearFlag_FE(USART2);
-	LL_USART_ClearFlag_NE(USART2);
-	LL_USART_ClearFlag_ORE(USART2);
-	LL_USART_ClearFlag_IDLE(USART2);
+	/* Если пришел байт данных */
+	if (LL_USART_IsActiveFlag_RXNE(USART2) == 1)
+	{
+		uint8_t trash =
+			LL_USART_ReceiveData8(
+					USART2);
+		(void) trash;
+	}
+
+	/* Иначе */
+	else
+	{
+		/* Сброс всех флагов */
+		LL_USART_ClearFlag_PE	(USART2);
+		LL_USART_ClearFlag_FE	(USART2);
+		LL_USART_ClearFlag_NE	(USART2);
+		LL_USART_ClearFlag_ORE	(USART2);
+		LL_USART_ClearFlag_IDLE	(USART2);
+		LL_USART_ClearFlag_TC	(USART2);
+		LL_USART_ClearFlag_LBD	(USART2);
+		LL_USART_ClearFlag_nCTS	(USART2);
+	}
+
 
 }
 
 void DMA1_Channel7_IRQHandler(
 	void)
 {
-	/* TODO - UFD написать обработчик прерывания DMA1_Channel7 */
-
-	if (LL_DMA_IsActiveFlag_GI7(DMA1) == 1)
-	{
-		LL_DMA_ClearFlag_GI7(DMA1);
-	}
-
 	if (LL_DMA_IsActiveFlag_TC7(DMA1) == 1)
 	{
+		/* Очистка флагов */
 		LL_DMA_ClearFlag_TC7(DMA1);
+		LL_DMA_ClearFlag_GI7(DMA1);
+
+		/* Отключение канала DMA */
 		LL_DMA_DisableChannel(
 			DMA1,
 			LL_DMA_CHANNEL_7);
 	}
-
-	if(LL_DMA_IsActiveFlag_TE7(DMA1) == 1)
+	else
 	{
-		LL_DMA_ClearFlag_TE7(DMA1);
+		/* Очистка флагов */
+		LL_DMA_ClearFlag_HT7	(DMA1);
+		LL_DMA_ClearFlag_TE7	(DMA1);
+		LL_DMA_ClearFlag_TC7	(DMA1);
+		LL_DMA_ClearFlag_GI7	(DMA1);
 
+		/* Отключение канала DMA */
 		LL_DMA_DisableChannel(
 			DMA1,
 			LL_DMA_CHANNEL_7);
