@@ -58,6 +58,22 @@ UFD_StartForceDMATransmit(
 	uint16_t cnt)
 {
 	/* TODO - UFD написать форсированный запуск передачи по каналу DMA */
+
+	// Включить в UART запрос на передачу DMA
+	LL_USART_EnableDMAReq_TX(USART2);
+
+	// Установить адрес, откуда начнется передача
+	LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_7, (uint32_t) pMemSource);
+
+	// Восстановить кол-во байт, которое необходимо передать по каналу DMA
+	 LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_7, cnt);
+
+	// Включить канал DMA
+	 LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
+
+	// Включить UART
+	 LL_USART_Enable(USART2);
+
 }
 
 void
@@ -66,6 +82,14 @@ UFD_StartDMATransmit(
 	uint16_t cnt)
 {
 	/* TODO - UFD написать запуск передачи по каналу DMA если канал DMA неактивен */
+
+
+	if(LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_7) != 1)
+	{
+	UFD_StartForceDMATransmit(
+		*pMemSource,
+		cnt);
+	}
 }
 
 static void
@@ -108,6 +132,17 @@ UFD_Init_DMA1_Channel7_For_USART2_Tx(
 		DMA1,
 		LL_DMA_CHANNEL_7,
 		&DMA_init_s);
+
+	// ВКЛЮЧЕНИЕ ПРЕРЫВАНИЯ ПО ОКОНЧАНИИ ПЕРЕДАЧИ
+	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
+
+	LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_7);
+
+	// ПРИОРИТЕТ ПРЕРЫВАНИЯ ДЛЯ DMA
+	NVIC_SetPriority(DMA1_Channel7_IRQn, 5);
+
+	// ВЫКЛЮЧЕНИЕ ВЕКТОРА ПРЕРЫВАНИЙ
+	NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 }
 
 static void
@@ -129,19 +164,52 @@ UFD_Init_USART2_TxRx(
 		&USART_init_s);
 
 	LL_USART_Enable(USART2);
+
+	NVIC_SetPriority(USART2_IRQn, 5);
+	NVIC_EnableIRQ(USART2_IRQn);
 }
 
 void USART2_IRQHandler(
 	void)
 {
 	/* TODO - UFD написать обработчик прерывания модуля USART2 */
+	LL_USART_ClearFlag_PE(USART2);
+	LL_USART_ClearFlag_FE(USART2);
+	LL_USART_ClearFlag_NE(USART2);
+	LL_USART_ClearFlag_ORE(USART2);
+	LL_USART_ClearFlag_IDLE(USART2);
+
 }
 
 void DMA1_Channel7_IRQHandler(
 	void)
 {
 	/* TODO - UFD написать обработчик прерывания DMA1_Channel7 */
+
+	if (LL_DMA_IsActiveFlag_GI7(DMA1) == 1)
+	{
+		LL_DMA_ClearFlag_GI7(DMA1);
+	}
+
+	if (LL_DMA_IsActiveFlag_TC7(DMA1) == 1)
+	{
+		LL_DMA_ClearFlag_TC7(DMA1);
+		LL_DMA_DisableChannel(
+			DMA1,
+			LL_DMA_CHANNEL_7);
+	}
+
+	if(LL_DMA_IsActiveFlag_TE7(DMA1) == 1)
+	{
+		LL_DMA_ClearFlag_TE7(DMA1);
+
+		LL_DMA_DisableChannel(
+			DMA1,
+			LL_DMA_CHANNEL_7);
+	}
+
 }
+
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
 
