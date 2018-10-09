@@ -37,6 +37,12 @@ UFD_Init_USART2_TxRx(
 
 /*#### |Begin| --> Секция - "Описание глобальных функций" ####################*/
 
+/**
+ * @brief	Функция выполняет инициализацию аппаратных модулей для передачи
+ * 			данных по USART2 с помощью DMA
+ * @param[in]	baudrate:	Скорость передачи данных
+ * @return	None
+ */
 void
 UFD_Init_All_USART2_TxRx_DMA1_Channel7_IO_Ports(
 	uint32_t baudrate)
@@ -52,6 +58,12 @@ UFD_Init_All_USART2_TxRx_DMA1_Channel7_IO_Ports(
 		baudrate);
 }
 
+/**
+ * @brief	Функция передает данные по модулю USART2 с помощью канала DMA
+ * @param[in]	*pMemSource:	Адрес, откуда начнется передача
+ * @param[in]	cnt: 	Количество байт, которые необходимо передать
+ * @return	None
+ */
 void
 UFD_StartForceDMATransmit(
 	uint32_t *pMemSource,
@@ -88,12 +100,19 @@ UFD_StartForceDMATransmit(
 
 }
 
+/**
+ * @brief	Функция принудительно передает данные по модулю USART2 с помощью канала DMA,
+ * 			если канал DMA неактивен
+ * @param[in]	*pMemSource: Адрес, откуда начнется передача
+ * @param[in]	cnt:	Количество байт, которые необходимо передать
+ * @return	None
+ */
 void
 UFD_StartDMATransmit(
 	uint32_t *pMemSource,
 	uint16_t cnt)
 {
-	/* TODO - UFD написать запуск передачи по каналу DMA если канал DMA неактивен */
+	/* TODO - UFD написать запуск передачи по каналу DMA, если канал DMA неактивен */
 
 
 	if (LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_7) != 1)
@@ -184,6 +203,11 @@ UFD_Init_USART2_TxRx(
 	NVIC_EnableIRQ(USART2_IRQn);
 }
 
+/**
+ * @brief	Функция обработки прерывания USART2
+ * @param	None
+ * @return	None
+ */
 void USART2_IRQHandler(
 	void)
 {
@@ -209,10 +233,13 @@ void USART2_IRQHandler(
 		LL_USART_ClearFlag_LBD	(USART2);
 		LL_USART_ClearFlag_nCTS	(USART2);
 	}
-
-
 }
 
+/**
+ * @brief	Функция обработки прерывания DMA
+ * @param	None
+ * @return	None
+ */
 void DMA1_Channel7_IRQHandler(
 	void)
 {
@@ -240,7 +267,6 @@ void DMA1_Channel7_IRQHandler(
 			DMA1,
 			LL_DMA_CHANNEL_7);
 	}
-
 }
 
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
