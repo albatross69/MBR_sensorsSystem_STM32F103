@@ -14,6 +14,7 @@
 
 /*#### |Begin| --> Секция - "Глобальные переменные" ##########################*/
 const uint32_t progTactLength = 10000u;
+char testMessage_a[] = "Hello World\n";
 /*#### |End  | <-- Секция - "Глобальные переменные" ##########################*/
 
 
@@ -56,7 +57,11 @@ int main(
 
 			BLEDS_Green_OFF();
 
-			LL_USART_TransmitData8(USART2, 'H');
+			UFD_StartDMATransmit(
+					(uint32_t*) testMessage_a,
+					strlen(testMessage_a));
+
+//			LL_USART_TransmitData8(USART2, 'H');
 
 
 			HPT_status_s.restProgTactCnt = progTactLength - TIM4->CNT;

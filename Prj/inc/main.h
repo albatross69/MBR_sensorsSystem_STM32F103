@@ -15,6 +15,7 @@
 /*==== |Begin| --> Секция - "C libraries" ====================================*/
 #include "stdio.h"
 #include "stdint.h"
+#include "string.h"
 /*==== |End  | <-- Секция - "C libraries" ====================================*/
 
 /*==== |Begin| --> Секция - "MK peripheral libraries" ========================*/
