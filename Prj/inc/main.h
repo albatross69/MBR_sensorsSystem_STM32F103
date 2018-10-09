@@ -15,6 +15,7 @@
 /*==== |Begin| --> Секция - "C libraries" ====================================*/
 #include "stdio.h"
 #include "stdint.h"
+#include "string.h"
 /*==== |End  | <-- Секция - "C libraries" ====================================*/
 
 /*==== |Begin| --> Секция - "MK peripheral libraries" ========================*/
@@ -26,6 +27,7 @@
 #include "BLEDS_board_leds.h"
 #include "UFD_uart_for_debug.h"
 #include "HPT_hard_prog_tact.h"
+#include "stm32f1xx_ll_usart.h"
 /*==== |End  | <-- Секция - "Extern libraries" ===============================*/
 /*#### |End  | <-- Секция - "Include" ########################################*/
 

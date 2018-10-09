@@ -14,7 +14,6 @@
 
 /*#### |Begin| --> Секция - "Глобальные переменные" ##########################*/
 const uint32_t progTactLength = 10000u;
-char testMessage_a[] = "Hello World\n";
 /*#### |End  | <-- Секция - "Глобальные переменные" ##########################*/
 
 
@@ -50,23 +49,24 @@ int main(
 	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
 	while (1)
 	{
-		if (HPT_status_s.newProgTactEn_flag != 0)
-		{
+//		if (HPT_status_s.newProgTactEn_flag != 0)
+//		{
 			HPT_status_s.newProgTactEn_flag = 0;
+<<<<<<< .merge_file_a07308
 			BLEDS_Green_ON();
 
 			BLEDS_Green_OFF();
 
-			UFD_StartDMATransmit(
-					(uint32_t*) testMessage_a,
-					strlen(testMessage_a));
-
-//			LL_USART_TransmitData8(USART2, 'H');
-
-
 			HPT_status_s.restProgTactCnt = progTactLength - TIM4->CNT;
 			HPT_status_s.minRestTactCnt = HPT_Min(HPT_status_s.restProgTactCnt, TIM4->CNT);
 		}
+=======
+		BLEDS_Green_ON();
+		LL_USART_TransmitData8(USART2, 0xAA);
+
+		BLEDS_Green_OFF();
+//		}
+>>>>>>> .merge_file_a07048
 	}
 	return 1;
 }
