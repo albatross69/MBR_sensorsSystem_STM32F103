@@ -56,6 +56,9 @@ int main(
 
 			BLEDS_Green_OFF();
 
+			LL_USART_TransmitData8(USART2, 'H');
+
+
 			HPT_status_s.restProgTactCnt = progTactLength - TIM4->CNT;
 			HPT_status_s.minRestTactCnt = HPT_Min(HPT_status_s.restProgTactCnt, TIM4->CNT);
 		}

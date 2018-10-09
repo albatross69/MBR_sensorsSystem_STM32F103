@@ -108,6 +108,7 @@ static void
 UFD_Init_IO_Ports(
 	void)
 {
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 	/* TODO - UFD написать инициализацию портов ввода/вывода */
 
 	LL_GPIO_InitTypeDef GPIO_init_s;
@@ -126,6 +127,7 @@ static void
 UFD_Init_DMA1_Channel7_For_USART2_Tx(
 	void)
 {
+	__HAL_RCC_DMA1_CLK_ENABLE();
 	/* TODO - UFD написать инициализацию для DMA1_Channel7 */
 
 	LL_DMA_InitTypeDef DMA_init_s;
@@ -158,6 +160,8 @@ static void
 UFD_Init_USART2_TxRx(
 	uint32_t baudrate)
 {
+	__HAL_RCC_USART2_CLK_ENABLE();
+
 	LL_USART_InitTypeDef USART_init_s;
 	USART_init_s.BaudRate 				= (uint32_t) baudrate;
 	USART_init_s.DataWidth 				= LL_USART_DATAWIDTH_8B;
