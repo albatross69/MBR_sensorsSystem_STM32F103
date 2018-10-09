@@ -47,6 +47,10 @@ int main(
 	HPT_InitTIMForProgTact(
 		progTactLength);
 
+
+	/* Включаем таймер 3 как 16-битный*/
+	VT_Init_Tim3_As_16bit();
+
 	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
 	while (1)
 	{
