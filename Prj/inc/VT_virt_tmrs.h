@@ -1,37 +1,37 @@
-/**
- * @file   	main.h
- * @author
- * @version
- * @date 	24 сент. 2018 г.
+/** 
+ * @file   	%<%NAME%>%.%<%EXTENSION%>%
+ * @author 	%<%USER%>%
+ * @version	
+ * @date 	%<%DATE%>%, %<%TIME%>%
  * @brief
  */
 
 
-#ifndef MAIN_H_
-#define MAIN_H_
+#ifndef INC_VT_VIRT_TMRS_H_
+#define INC_VT_VIRT_TMRS_H_
 
 
 /*#### |Begin| --> Секция - "Include" ########################################*/
 /*==== |Begin| --> Секция - "C libraries" ====================================*/
-#include "stdio.h"
 #include "stdint.h"
 /*==== |End  | <-- Секция - "C libraries" ====================================*/
 
 /*==== |Begin| --> Секция - "MK peripheral libraries" ========================*/
 #include "stm32f1xx.h"
+#include "stm32f1xx_ll_tim.h"
+#include "stm32f1xx_ll_rcc.h"
+#include "stm32f1xx_hal_tim.h"
+#include "stm32f1xx_hal_rcc.h"
 /*==== |End  | <-- Секция - "MK peripheral libraries" ========================*/
 
 /*==== |Begin| --> Секция - "Extern libraries" ===============================*/
-#include "rcc.h"
-#include "BLEDS_board_leds.h"
-#include "UFD_uart_for_debug.h"
-#include "HPT_hard_prog_tact.h"
-#include "VT_virt_tmrs.h"
 /*==== |End  | <-- Секция - "Extern libraries" ===============================*/
 /*#### |End  | <-- Секция - "Include" ########################################*/
 
 
 /*#### |Begin| --> Секция - "Определение констант" ###########################*/
+#define VT_UPPER_CNT						NULL
+#define VT_LOWER_CNT						TIM3->CNT
 /*#### |End  | <-- Секция - "Определение констант" ###########################*/
 
 
@@ -44,13 +44,18 @@
 
 
 /*#### |Begin| --> Секция - "Прототипы глобальных функций" ###################*/
+extern void VT_Init_Tim3MasterTim2Slave(
+		void);
+
+extern void VT_Init_Tim3_As_16bit(
+		void);
 /*#### |End  | <-- Секция - "Прототипы глобальных функций" ###################*/
 
 
 /*#### |Begin| --> Секция - "Определение макросов" ###########################*/
 /*#### |End  | <-- Секция - "Определение макросов" ###########################*/
 
-#endif	/* MAIN_H_ */
+#endif	/* PRJ_INC_VT_VIRT_TMRS_H_ */
 
 /*############################################################################*/
 /*################################ END OF FILE ###############################*/

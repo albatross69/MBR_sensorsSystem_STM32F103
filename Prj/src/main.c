@@ -46,6 +46,10 @@ int main(
 	HPT_InitTIMForProgTact(
 		progTactLength);
 
+
+	/* Включаем таймер 3 как 16-битный*/
+	VT_Init_Tim3_As_16bit();
+
 	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
 	while (1)
 	{
@@ -55,6 +59,7 @@ int main(
 			BLEDS_Green_ON();
 
 			BLEDS_Green_OFF();
+
 
 			HPT_status_s.restProgTactCnt = progTactLength - TIM4->CNT;
 			HPT_status_s.minRestTactCnt = HPT_Min(HPT_status_s.restProgTactCnt, TIM4->CNT);
