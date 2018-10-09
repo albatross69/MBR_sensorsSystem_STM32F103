@@ -97,7 +97,6 @@ UFD_StartForceDMATransmit(
 
 	/* Включить UART */
 	LL_USART_Enable(USART2);
-
 }
 
 /**
@@ -112,9 +111,6 @@ UFD_StartDMATransmit(
 	uint32_t *pMemSource,
 	uint16_t cnt)
 {
-	/* TODO - UFD написать запуск передачи по каналу DMA, если канал DMA неактивен */
-
-
 	if (LL_DMA_IsEnabledChannel(DMA1, LL_DMA_CHANNEL_7) != 1)
 	{
 		UFD_StartForceDMATransmit(
@@ -128,7 +124,6 @@ UFD_Init_IO_Ports(
 	void)
 {
 	__HAL_RCC_GPIOA_CLK_ENABLE();
-	/* TODO - UFD написать инициализацию портов ввода/вывода */
 
 	LL_GPIO_InitTypeDef GPIO_init_s;
 	GPIO_init_s.Mode 		= LL_GPIO_MODE_ALTERNATE;
@@ -147,7 +142,6 @@ UFD_Init_DMA1_Channel7_For_USART2_Tx(
 	void)
 {
 	__HAL_RCC_DMA1_CLK_ENABLE();
-	/* TODO - UFD написать инициализацию для DMA1_Channel7 */
 
 	LL_DMA_InitTypeDef DMA_init_s;
 	DMA_init_s.Direction 				= LL_DMA_DIRECTION_MEMORY_TO_PERIPH;
@@ -216,7 +210,7 @@ void USART2_IRQHandler(
 	{
 		uint8_t trash =
 			LL_USART_ReceiveData8(
-					USART2);
+				USART2);
 		(void) trash;
 	}
 
