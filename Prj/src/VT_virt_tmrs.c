@@ -43,38 +43,44 @@ void VT_Init_Tim3MasterTim2Slave(void)
 
 
 
-	/* Настройка таймера */
+	/* Настройка TIM3 */
 
-	LL_TIM_InitTypeDef timInit_s;
-	LL_TIM_StructInit(&timInit_s);
-	timInit_s.Autoreload = 0xFFFF;
-	timInit_s.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
-	timInit_s.CounterMode = LL_TIM_COUNTERMODE_UP;
-	timInit_s.Prescaler = 72u;
+	LL_TIM_InitTypeDef tim3Init_s;
+	LL_TIM_StructInit(&tim3Init_s);
+	tim3Init_s.Autoreload = (uint32_t) 0xFFFF;
+	tim3Init_s.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+	tim3Init_s.CounterMode = LL_TIM_COUNTERMODE_UP;
+	tim3Init_s.Prescaler = 72u;
 
 	/* Инициализируем TIM3 */
-	LL_TIM_Init(TIM3, &timInit_s);
-	/* Структура для master-мода */
-	TIM_MasterConfigTypeDef tim3MasterConfig_s;
-	tim3MasterConfig_s.MasterOutputTrigger = TIM_TRGO_UPDATE;
-	tim3MasterConfig_s.MasterSlaveMode = TIM_MASTERSLAVEMODE_ENABLE;
-	HAL_TIMEx_MasterConfigSynchronization(TIM3, &tim3MasterConfig_s);
+	LL_TIM_Init(TIM3, &tim3Init_s);
 
-	/* Структура для slave-мода */
-	TIM_SlaveConfigTypeDef tim2SlaveConfig_s;
-	tim2SlaveConfig_s.SlaveMode = TIM_SLAVEMODE_TRIGGER;
-	/* этот триггер связан с tim3 */
-	tim2SlaveConfig_s.InputTrigger = TIM_TS_ITR2;
-	/* ETR active on rising edge */
-	tim2SlaveConfig_s.TriggerPolarity = TIM_TRIGGERPOLARITY_NONINVERTED;
-	/* не использовать предделитель для триггера */
-	tim2SlaveConfig_s.TriggerPrescaler = TIM_TRIGGERPRESCALER_DIV1;
-	/* никаких фильтров */
-	tim2SlaveConfig_s.TriggerFilter = 0;
+	/* Включаем отправку UEV*/
+	LL_TIM_EnableUpdateEvent(TIM3);
+	/* Указываем выходной триггер*/
+	LL_TIM_SetTriggerOutput(TIM3, LL_TIM_TRGO_UPDATE);
 
 
-	//Настраиваем slave-а
-	HAL_TIM_SlaveConfigSynchronization(TIM2, &tim2SlaveConfig_s);
+	/* Настройка TIM2 */
+
+	LL_TIM_InitTypeDef tim2Init_s;
+	LL_TIM_StructInit(&tim2Init_s);
+	tim2Init_s.Autoreload = (uint32_t) 0xFFFF;
+	tim2Init_s.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+	tim2Init_s.CounterMode = LL_TIM_COUNTERMODE_UP;
+	tim2Init_s.Prescaler = 0u;
+
+	/* Инициализируем TIM2 */
+	LL_TIM_Init(TIM2, &tim2Init_s);
+
+	/* Установка входящего триггера ITR2*/
+	LL_TIM_SetTriggerInput(TIM2, LL_TIM_TS_ITR2);
+	/* Включаем slave режим*/
+	LL_TIM_EnableMasterSlaveMode(TIM2);
+
+	/* Slave мод работает в режиме */
+	TIM2->SMCR |= TIM_SMCR_SMS;
+
 
 	/* Включение Master И Slave */
 	LL_TIM_EnableCounter(TIM3);

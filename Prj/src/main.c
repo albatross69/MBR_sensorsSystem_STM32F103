@@ -48,8 +48,9 @@ int main(
 		progTactLength);
 
 
+	VT_Init_Tim3MasterTim2Slave();
 	/* Включаем таймер 3 как 16-битный*/
-	VT_Init_Tim3_As_16bit();
+	//VT_Init_Tim3_As_16bit();
 
 	/*=== |End  | <-- Секция - "Конфигурирование периферии микроконтроллера" =*/
 	while (1)
