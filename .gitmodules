@@ -1,0 +1,3 @@
+[submodule "Lib_A_VTMR_virtual_timers"]
+	path = Lib_A_VTMR_virtual_timers
+	url = https://github.com/Raptor26/Lib_A_VTMR_virtual_timers.git
