@@ -13,6 +13,10 @@
 
 /*#### |Begin| --> Секция - "Include" ########################################*/
 /*==== |Begin| --> Секция - "C libraries" ====================================*/
+#include "Lib_A_VTMR_virtual_timers/Lib_A_VTMR_virtual_timers.h"
+#include "stm32f1xx_ll_exti.h";
+#include "stm32f1xx_ll_gpio.h";
+#include "stm32f1xx_hal_gpio.h";
 /*==== |End  | <-- Секция - "C libraries" ====================================*/
 
 /*==== |Begin| --> Секция - "MK peripheral libraries" ========================*/
@@ -36,6 +40,7 @@
 
 
 /*#### |Begin| --> Секция - "Прототипы глобальных функций" ###################*/
+extern void SR04_sonar_init(void);
 /*#### |End  | <-- Секция - "Прототипы глобальных функций" ###################*/
 
 
